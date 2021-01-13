@@ -15,6 +15,16 @@ public class Lesson1 {
     // Lisa rida a = c
     // Prindi välja a==b ja a==c, mis muutus???
     public static void excersie1(){
+        int a=1;
+        int b=1;
+        int c= 3;
+        System.out.println( a == b );
+        System.out.println( a == c );
+        a=c;
+        System.out.println( a == b );
+        System.out.println( a == c );
+
+
     }
 
     // TODO
@@ -23,6 +33,14 @@ public class Lesson1 {
     // Tekita muutuja y2 = x2++, trüki välja nii x2 ja y2
     // Analüüsi tulemusi
     public static void excersie2(){
+        int x1 = 10;
+        int x2 = 20;
+        int y1 = ++x1;
+        int y2 = x2++;
+        System.out.println(x1);
+        System.out.println(y1);
+        System.out.println(x2);
+        System.out.println(y2);
     }
 
     // TODO
@@ -33,12 +51,20 @@ public class Lesson1 {
     // d = 21 % 3
     // Prindi välja kõigi muutujate väärtused
     public static void excersie3(){
+         int a = 18 % 3;
+         float b = 19 % 3;
+         float c = 20 % 3;
+         int d = 21 % 3;
+         System.out.println(a + " " + b + " " + c + " " + d);
     }
 
     // TODO
     // Defineeri String tüüpi muutuja mille sisu oleks "\"\\""
     // Trüki muutuja sisu välja
     public static void excersie4(){
+        String a = "\\";
+        String b = "\"\\\"\\\\\\\"\\\\\\\\\\\"\\\"\"";
+        System.out.println(b);
     }
 
 }
