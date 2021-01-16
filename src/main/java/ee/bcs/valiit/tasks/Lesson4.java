@@ -1,43 +1,134 @@
 package ee.bcs.valiit.tasks;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class Lesson4 {
-    // Store account nr as a key and account balance as value
-    HashMap<String, BigDecimal> accountBalanceMap = new HashMap<>();
+    static HashMap<String, BigDecimal> accountBalanceMap = new HashMap<>();
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        while (true){
-            String line = scanner.nextLine();
-            if (line.equalsIgnoreCase("exit")){
-                break;
+        public static void main(String[] args) {
+            bankTransactions();
+        }
+
+        public static void bankTransactions() {
+            while (true) {
+                Scanner scanner = new Scanner(System.in);
+                System.out.println("Please enter your command: ");
+                String line = scanner.nextLine();
+
+                if (line.equalsIgnoreCase("exit")) {
+                    exit();
+                    break;
+
+                } else if (line.equalsIgnoreCase("createAccount")) {
+                    createAccount();
+
+                } else if (line.equalsIgnoreCase("getBalance")) {
+                    getBalance();
+
+                } else if (line.equalsIgnoreCase("depositMoney")) {
+                    depositMoney();
+
+                } else if (line.equalsIgnoreCase("withdrawMoney")) {
+                    withdrawMoney();
+
+                } else if (line.equalsIgnoreCase("transfer")) {
+                    transfer();
+                }
             }
-            // TODO 1
-            // Add command: "createAccount ${accountNr}"
-            // this has to store accountNr with 0 balance
-            // TODO 2
-            // Add command: "getBalance ${accountNr}"
-            // this has to display account balance of specific acount
-            // TODO 3
-            // Add command: "depositMoney ${accountNr} ${amount}
-            // this has to add specified amount of money to account
-            // You have to check that amount is positive number
-            // TODO 4
-            // Add command: "withdrawMoney ${accountNr} ${amount}
-            // This has to remove specified amount of money from account
-            // You have to check that amount is positive number
-            // You may not allow this transaction if account balance would become negative
-            // TODO 5
-            // Add command: "transfer ${fromAccount} ${toAccount} ${amount}
-            // This has to remove specified amount from fromAccount and add it to toAccount
-            // Your application needs to check that toAccount is positive
-            // And from account has enough money to do that transaction
-            else {
-                System.out.println("Unknown command");
+        }
+        private static void exit() {
+            System.out.println("Thank you and bye!");
+        }
+
+        private static void createAccount(){
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Please enter your account number: ");
+            String accNumber = scanner.nextLine();
+            BigDecimal balance = new BigDecimal("0");
+            accountBalanceMap.put(accNumber, balance);
+        }
+
+        private static void getBalance(){
+            Scanner scanner = new Scanner (System.in);
+            System.out.println("Please enter your account number: ");
+            String accNumber = scanner.nextLine();
+            if (!accountBalanceMap.containsKey(accNumber)) {
+                System.out.println("Account not found.");
+            } else {
+                System.out.println("Your balance is: " + accountBalanceMap.get(accNumber) + " EUR");
+            }
+        }
+
+        private static void depositMoney() {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Please enter your account number: ");
+            String accNumber = scanner.nextLine();
+            MathContext round = new MathContext(4);
+            if (!accountBalanceMap.containsKey(accNumber)) {
+                System.out.println("Account not found.");
+            } else {
+                System.out.println("Please enter the amount: ");
+                String summa = scanner.nextLine();
+                BigDecimal uus = new BigDecimal(summa);
+                BigDecimal balance = accountBalanceMap.get(accNumber);
+                if (uus.compareTo(BigDecimal.ZERO) > 0) {
+                    accountBalanceMap.put(accNumber, (uus.add(balance, round)));
+                    System.out.println("Your new balance is: " + (uus.add(balance)) + " EUR");
+                } else {
+                    System.out.println("Non-suitable entry");
+                }
+            }
+        }
+
+        private static void withdrawMoney() {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Please enter your account number: ");
+            String accNumber = scanner.nextLine();
+            MathContext round = new MathContext(4);
+            if (!accountBalanceMap.containsKey(accNumber)) {
+                System.out.println("Account not found.");
+            } else {
+                System.out.println("Please enter the amount: ");
+                String summa = scanner.nextLine();
+                BigDecimal uus = new BigDecimal(summa);
+                BigDecimal balance = accountBalanceMap.get(accNumber);
+                if ((uus.compareTo(BigDecimal.ZERO)) > 0 && (balance.compareTo(uus)) >= 0) {
+                    accountBalanceMap.put(accNumber, (balance.subtract(uus, round)));
+                    System.out.println("Your new balance is: " + accountBalanceMap.get(accNumber) + " EUR");
+                } else {
+                    System.out.println("Transaction not allowed.");
+                }
+
+            }
+        }
+
+        private static void transfer() {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Please enter your account number: ");
+            String accNumber = scanner.nextLine();
+            MathContext round = new MathContext(4);
+            if (!accountBalanceMap.containsKey(accNumber)) {
+                System.out.println("Account not found.");
+            } else if (accountBalanceMap.containsKey(accNumber)) {
+                System.out.println("Please enter destination account number: ");
+                String toAccount = scanner.nextLine();
+                accountBalanceMap.put(toAccount, BigDecimal.ZERO);
+                BigDecimal balance = accountBalanceMap.get(accNumber);
+                System.out.println("Please enter the amount: ");
+                String summa = scanner.nextLine();
+                BigDecimal uus = new BigDecimal(summa);
+                if ((uus.compareTo(BigDecimal.ZERO)) > 0 && (balance.compareTo(uus)) >= 0) {
+                    accountBalanceMap.put(toAccount, (BigDecimal.ZERO.add(uus, round)));
+                    accountBalanceMap.put(accNumber, (balance.subtract(uus, round)));
+                    System.out.println("Your new balance is: " + accountBalanceMap.get(accNumber) + " EUR");
+                    System.out.println("Destination account new balance is: " + accountBalanceMap.get(toAccount) + " EUR");
+                } else {
+                    System.out.println("Transaction not allowed.");
+                }
             }
         }
     }
-}
+
