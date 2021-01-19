@@ -12,46 +12,47 @@ public class Lesson4 {
             bankTransactions();
         }
 
-        public static void bankTransactions() {
-            while (true) {
-                Scanner scanner = new Scanner(System.in);
-                System.out.println("Please enter your command: ");
-                String line = scanner.nextLine();
+            public static void bankTransactions(){
+                while (true) {
+                    Scanner scanner = new Scanner(System.in);
+                    System.out.println("Please enter your command: ");
+                    String line = scanner.nextLine();
 
-                if (line.equalsIgnoreCase("exit")) {
-                    exit();
-                    break;
+                    if (line.equalsIgnoreCase("exit")) {
+                        exit();
+                        break;
 
-                } else if (line.equalsIgnoreCase("createAccount")) {
-                    createAccount();
+                    } else if (line.equalsIgnoreCase("createAccount")) {
+                        createAccount();
 
-                } else if (line.equalsIgnoreCase("getBalance")) {
-                    getBalance();
+                    } else if (line.equalsIgnoreCase("getBalance")) {
+                        getBalance();
 
-                } else if (line.equalsIgnoreCase("depositMoney")) {
-                    depositMoney();
+                    } else if (line.equalsIgnoreCase("depositMoney")) {
+                        depositMoney();
 
-                } else if (line.equalsIgnoreCase("withdrawMoney")) {
-                    withdrawMoney();
+                    } else if (line.equalsIgnoreCase("withdrawMoney")) {
+                        withdrawMoney();
 
-                } else if (line.equalsIgnoreCase("transfer")) {
-                    transfer();
+                    } else if (line.equalsIgnoreCase("transfer")) {
+                        transfer();
+                    }
                 }
             }
-        }
-        private static void exit() {
+
+        public static void exit() {
             System.out.println("Thank you and bye!");
         }
 
-        private static void createAccount(){
+        public static void createAccount(){
             Scanner scanner = new Scanner(System.in);
             System.out.println("Please enter your account number: ");
             String accNumber = scanner.nextLine();
             BigDecimal balance = new BigDecimal("0");
-            accountBalanceMap.put(accNumber, balance);
+            accountBalanceMap.put(accNumber, BigDecimal.ZERO);
         }
 
-        private static void getBalance(){
+        public static void getBalance(){
             Scanner scanner = new Scanner (System.in);
             System.out.println("Please enter your account number: ");
             String accNumber = scanner.nextLine();
@@ -62,7 +63,7 @@ public class Lesson4 {
             }
         }
 
-        private static void depositMoney() {
+        public static void depositMoney() {
             Scanner scanner = new Scanner(System.in);
             System.out.println("Please enter your account number: ");
             String accNumber = scanner.nextLine();
@@ -75,14 +76,14 @@ public class Lesson4 {
                 BigDecimal balance = accountBalanceMap.get(accNumber).setScale(2, RoundingMode.HALF_UP);
                 if (uus.compareTo(BigDecimal.ZERO) > 0) {
                     accountBalanceMap.put(accNumber, (uus.add(balance)));
-                    System.out.println("Your new balance is: " + (uus.add(balance)) + " EUR");
+                    System.out.println("Your new balance is: " + accountBalanceMap.get(accNumber) + " EUR");
                 } else {
                     System.out.println("Non-suitable entry");
                 }
             }
         }
 
-        private static void withdrawMoney() {
+        public static void withdrawMoney() {
             Scanner scanner = new Scanner(System.in);
             System.out.println("Please enter your account number: ");
             String accNumber = scanner.nextLine();
