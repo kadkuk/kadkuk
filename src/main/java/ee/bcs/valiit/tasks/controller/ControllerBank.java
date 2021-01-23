@@ -1,18 +1,20 @@
 package ee.bcs.valiit.tasks.controller;
 
-import ee.bcs.valiit.tasks.BankAccount;
-import ee.bcs.valiit.tasks.BankClient;
-import ee.bcs.valiit.tasks.Lesson4;
-import ee.bcs.valiit.tasks.Transfers;
+import ee.bcs.valiit.tasks.*;
+import ee.bcs.valiit.tasks.solution.controller.SolutionEmployeeController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @RequestMapping("bank")
@@ -174,20 +176,26 @@ public class ControllerBank {
         return "Transaction not allowed.";
     }
 
-    //http://localhost:8080/bank/1112/2223/10
-    // @GetMapping("transfer/{from}/{to}/{sum}")
-    //public String transfer(@PathVariable("from") String from, @PathVariable("to") String to, @PathVariable("sum") String sum) {
-      //  BigDecimal balanceFrom = accountBalanceMap.get(from).setScale(2, RoundingMode.HALF_UP);
-        //BigDecimal balanceTo = accountBalanceMap.get(to).setScale(2, RoundingMode.HALF_UP);
-        //BigDecimal uus = new BigDecimal(sum).setScale(2, RoundingMode.HALF_UP);
-        //if ((uus.compareTo(BigDecimal.ZERO)) > 0 && (balanceFrom.compareTo(uus)) >= 0) {
-         //   accountBalanceMap.put(to, (balanceTo.add(uus).setScale(2, RoundingMode.HALF_UP)));
-          //  accountBalanceMap.put(from, (balanceFrom.subtract(uus).setScale(2, RoundingMode.HALF_UP)));
-           // return "Account " + from + " new balance is " + accountBalanceMap.get(from) + " EUR, and account "+ to +" new balance is " + accountBalanceMap.get(to) + " EUR.";
-        //} else {
-          //  return "Transaction not allowed.";
-        //}
-    //}
+    //http://localhost:8080/bank
+    @GetMapping()
+    public List<BankClient> clients(){
+        String sql15="SELECT * FROM client";
+        List<BankClient> result = jdbcTemplate.query(sql15, new HashMap<>(), new BankClientRowMapper());
+        return result;
+    }
+
+    private class BankClientRowMapper implements RowMapper<BankClient> {
+        @Override
+        public BankClient mapRow(ResultSet resultSet, int i) throws SQLException {
+            BankClient clients = new BankClient();
+            clients.setClientId(resultSet.getInt("id"));
+            clients.setFirstName(resultSet.getString("first_name"));
+            clients.setLastName(resultSet.getString("last_name"));
+            clients.setAddress(resultSet.getString("address"));
+            clients.setEmail(resultSet.getString("email"));
+            return clients;
+        }
+    }
 }
 
 
