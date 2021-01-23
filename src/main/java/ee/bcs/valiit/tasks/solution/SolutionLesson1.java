@@ -1,6 +1,9 @@
 package ee.bcs.valiit.tasks.solution;
 
-public class Lesson1 {
+/*
+//          DON'T CHANGE THIS FILE
+*/
+public class SolutionLesson1 {
 
     public static void main(String[] args) {
         excersie1();
