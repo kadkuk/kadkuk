@@ -4,22 +4,41 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="1" author="Siim">
-        <createTable tableName="author">
+    <changeSet id="1" author="Kadri">
+        <createTable tableName="client">
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="name" type="text"/>
+            <column name="first_name" type="text"/>
+            <column name="last_name" type="text"/>
+            <column name="address" type="text"/>
+            <column name="email" type="text"/>
         </createTable>
 
-        <createTable tableName="book">
-            <column name="id" type="int" autoIncrement="true">
+        <createTable tableName="account">
+            <column name="account_number" type="text">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="name" type="text"/>
-            <column name="author_id" type="int">
-                <constraints foreignKeyName="fk_book_author" references="author(id)"/>
+            <column name="balance" type="numeric" />
+            <column name="client_id" type="int">
+                <constraints foreignKeyName="fk_client_id" references="client(id)"/>
             </column>
         </createTable>
+
+        <createTable tableName="transactions">
+            <column name="transaction_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="from_account" type="text" >
+                <constraints foreignKeyName="fk_from_account" references="account(account_number)"/>
+            </column>
+            <column name="to_account" type="text">
+                <constraints foreignKeyName="fk_to_account" references="account(account_number)"/>
+            </column>
+            <column name="amount" type="numeric" />
+            <column name="time" type="timestamp"/>
+            <column name="transaction_type" type="text"/>
+        </createTable>
+
     </changeSet>
 </databaseChangeLog>
