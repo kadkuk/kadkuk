@@ -9,6 +9,7 @@ class Lesson3HardTest {
     @Test
     void evenFibonacci() {
         assertEquals(44, Lesson3Hard.evenFibonacci(10));
+        assertEquals(0, Lesson3Hard.evenFibonacci(1));
     }
 
     @Test
