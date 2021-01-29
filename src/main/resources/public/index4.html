@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p>Miinimum</p>
+a: <input id="min_a">
+b: <input id="min_b">
+<button id="min_button" type="button">Min</button>
+vastus: <input id="min_vastus" disabled/>
+<br/>
+<script>
+    let min_a = document.getElementById("min_a");
+    let min_b = document.getElementById("min_b");
+    let min_vastus = document.getElementById("min_vastus");
+    function MinFunction() {
+        if (min_a.value < min_b.value){
+            min_vastus.value = min_a.value
+        } else {
+            min_vastus.value = min_b.value
+        }
+    }
+let element = document.getElementById("min_button")
+element.addEventListener("click", MinFunction)
+</script>
+
+<p>Maksimum</p>
+a: <input id="max_a">
+b: <input id="max_b">
+<button id="max_button" type="button">Max</button>
+vastus: <input id="max_vastus" disabled/>
+<br/>
+<script>
+    let max_a = document.getElementById("max_a");
+    let max_b = document.getElementById("max_b");
+    let max_vastus = document.getElementById("max_vastus");
+    function MaxFunction() {
+        if (max_a.value > max_b.value){
+            max_vastus.value = max_a.value
+        } else {
+            max_vastus.value = max_b.value
+        }
+    }
+    let element2 = document.getElementById("max_button")
+    element2.addEventListener("click", MaxFunction)
+</script>
+
+<p>Absoluutarv</p>
+a: <input id="abs_a">
+<button id="abs_button" type="button">Abs</button>
+vastus: <input id="abs_vastus" disabled/>
+<br/>
+<script>
+    let abs_a = document.getElementById("abs_a");
+    let abs_vastus = document.getElementById("abs_vastus");
+    function AbsFunction() {
+        if (abs_a.value <0){
+            abs_vastus.value = abs_a.value * -1
+        } else {
+            abs_vastus.value = abs_a.value
+        }
+    }
+    let element3 = document.getElementById("abs_button")
+    element3.addEventListener("click", AbsFunction)
+</script>
+
+<p>Paaris-paaritu</p>
+a: <input id="even_a">
+<button id="even_button" type="button">On võrdne</button>
+vastus: <input id="even_vastus" disabled/>
+<br/>
+<script>
+    let even_a = document.getElementById("even_a");
+    let even_vastus = document.getElementById("even_vastus");
+    function EvenFunction() {
+        if (even_a.value % 2 === 0){
+            even_vastus.value = true
+        } else {
+            even_vastus.value = false
+        }
+    }
+    let element4 = document.getElementById("even_button")
+    element4.addEventListener("click", EvenFunction)
+</script>
+
+<p>3-st miinimum</p>
+a: <input id="mini_a">
+b: <input id="mini_b">
+c: <input id="mini_c">
+<button id="mini_button" type="button">Min</button>
+vastus: <input id="mini_vastus" disabled/>
+<br/>
+<script>
+    let mini_a = document.getElementById("mini_a");
+    let mini_b = document.getElementById("mini_b");
+    let mini_c = document.getElementById("mini_c");
+    let mini_vastus = document.getElementById("mini_vastus");
+    function Mini3Function() {
+        if (mini_a.value <= mini_b.value && mini_a.value <= mini_c.value){
+            mini_vastus.value = mini_a.value
+        } else if (mini_b.value <= mini_a.value && mini_b.value <= mini_c.value){
+            mini_vastus.value = mini_b.value
+        } else {
+            mini_vastus.value = mini_c.value
+        }
+    }
+    let element5 = document.getElementById("mini_button")
+    element5.addEventListener("click", Mini3Function)
+</script>
+
+<p>3-st maksimum</p>
+a: <input id="maxi_a">
+b: <input id="maxi_b">
+c: <input id="maxi_c">
+<button id="maxi_button" type="button">Max</button>
+vastus: <input id="maxi_vastus" disabled/>
+<br/>
+<script>
+    let maxi_a = document.getElementById("maxi_a");
+    let maxi_b = document.getElementById("maxi_b");
+    let maxi_c = document.getElementById("maxi_c");
+    let maxi_vastus = document.getElementById("maxi_vastus");
+    function Max3Function() {
+        if (maxi_a.value >= maxi_b.value && maxi_a.value >= maxi_c.value){
+            maxi_vastus.value = maxi_a.value
+        } else if (maxi_b.value >= maxi_a.value && maxi_b.value >= maxi_c.value){
+            maxi_vastus.value = maxi_b.value
+        } else {
+            maxi_vastus.value = maxi_c.value
+        }
+    }
+    let element6 = document.getElementById("maxi_button")
+    element6.addEventListener("click", Max3Function)
+</script>
+
+</body>
+</html>
