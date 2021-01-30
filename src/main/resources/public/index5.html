@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>myBank: võta raha</title>
+    <title>myBank: ülekanne</title>
 </head>
 <body>
 <table style="left: auto">
@@ -29,7 +29,7 @@
         </td>
         <td>
             <h3>
-                <button type="button"><a href="index5.html">Ülekanne</a></button>
+                <button type="button"><a href="index4.html">Võta raha</a></button>
             </h3>
         </td>
         <td>
@@ -48,16 +48,20 @@
     <table style="margin-left:auto;margin-right:auto;" border="0">
         <tr>
             <th></th>
-            <th><h3> Võta raha välja: </h3></th>
+            <th><h3> Tee ülekanne: </h3></th>
         </tr>
         <form method="post">
             <tr>
-                <th> Kontonumber:</th>
-                <td><input id="accNumber" type="text"/></td>
+                <th> Saatev konto:</th>
+                <td><input id="fromAccount" type="text"/></td>
+            </tr>
+            <tr>
+                <th> Vastuvõttev konto:</th>
+                <td><input id="toAccount" type="text"/></td>
             </tr>
             <tr>
                 <th> Summa:</th>
-                <td><input id="transactionAmount" type="number"/></td>
+                <td><input id="amount" type="number"/></td>
             </tr>
             <tr>
                 <th></th>
