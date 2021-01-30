@@ -1,14 +1,19 @@
 package ee.bcs.valiit.tasks.repository;
 
-import ee.bcs.valiit.tasks.BankAccount;
 import ee.bcs.valiit.tasks.BankClient;
+import ee.bcs.valiit.tasks.TotalDeposits;
+import ee.bcs.valiit.tasks.Transfers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 
 @Repository
 public class BankRepository {
@@ -16,11 +21,12 @@ public class BankRepository {
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
 
-    public void createClient(String firstName, String lastName, String address, String email) {
-        String sql = "INSERT INTO client (first_name, last_name, address, email) VALUES(:fnParam, :lnParam, :addParam, :emailParam)";
+    public void createClient(String firstName, String lastName, String socialNumber, String address, String email) {
+        String sql = "INSERT INTO client (first_name, last_name, social_number, address, email) VALUES(:fnParam, :lnParam, :snParam, :addParam, :emailParam)";
         HashMap<String, Object> paraMap = new HashMap<>();
         paraMap.put("fnParam", firstName);
         paraMap.put("lnParam", lastName);
+        paraMap.put("snParam", socialNumber);
         paraMap.put("addParam", address);
         paraMap.put("emailParam", email);
         jdbcTemplate.update(sql, paraMap);
@@ -49,7 +55,7 @@ public class BankRepository {
         return jdbcTemplate.queryForObject(sql3, paraMap3, BigDecimal.class);
     }
 
-    public void addToTransactionsBalance(String accNumber){
+    public void addToTransactionsBalance(String accNumber) {
         String sql15 = "INSERT INTO transactions (from_account, time, transaction_type ) VALUES(:accParam, :timeParam, :typeParam)";
         HashMap<String, Object> paraMap15 = new HashMap<>();
         paraMap15.put("accParam", accNumber);
@@ -58,16 +64,15 @@ public class BankRepository {
         jdbcTemplate.update(sql15, paraMap15);
     }
 
-    public String changeBalance(BigDecimal newBalance, String accNumber) {
+    public void changeBalance(BigDecimal newBalance, String accNumber) {
         String sql5 = "UPDATE account SET balance = :newBalance WHERE account_number = :accParam";
         HashMap<String, Object> paraMap5 = new HashMap<>();
         paraMap5.put("accParam", accNumber);
         paraMap5.put("newBalance", newBalance);
         jdbcTemplate.update(sql5, paraMap5);
-        return "";
     }
 
-    public void addToTransactionsDeposit (BigDecimal transactionAmount, String accNumber) {
+    public void addToTransactionsDeposit(BigDecimal transactionAmount, String accNumber) {
         String sql6 = "INSERT INTO transactions (to_account, amount, time, transaction_type ) VALUES(:accParam, :amountParam, :timeParam, :typeParam)";
         HashMap<String, Object> paraMap6 = new HashMap<>();
         paraMap6.put("accParam", accNumber);
@@ -75,9 +80,9 @@ public class BankRepository {
         paraMap6.put("timeParam", LocalDateTime.now());
         paraMap6.put("typeParam", "deposit");
         jdbcTemplate.update(sql6, paraMap6);
-}
+    }
 
-    public void addToTransactionsWithdraw (BigDecimal transactionAmount, String accNumber) {
+    public void addToTransactionsWithdraw(BigDecimal transactionAmount, String accNumber) {
         String sql9 = "INSERT INTO transactions (from_account, amount, time, transaction_type ) VALUES(:accParam, :amountParam, :timeParam, :typeParam)";
         HashMap<String, Object> paraMap9 = new HashMap<>();
         paraMap9.put("accParam", accNumber);
@@ -87,7 +92,7 @@ public class BankRepository {
         jdbcTemplate.update(sql9, paraMap9);
     }
 
-    public void addToTransactionsTransfers (BigDecimal amount, String fromAccount, String toAccount) {
+    public void addToTransactionsTransfers(BigDecimal amount, String fromAccount, String toAccount) {
         String sql14 = "INSERT INTO transactions (from_account, to_account, amount, time, transaction_type ) VALUES(:fromAccParam, :toAccParam, :amountParam, :timeParam, :typeParam)";
         HashMap<String, Object> paraMap14 = new HashMap<>();
         paraMap14.put("fromAccParam", fromAccount);
@@ -97,5 +102,67 @@ public class BankRepository {
         paraMap14.put("typeParam", "transfer");
         jdbcTemplate.update(sql14, paraMap14);
     }
+
+    public List<BankClient> allClients() {
+        String sql15 = "SELECT * FROM client";
+        List<BankClient> result = jdbcTemplate.query(sql15, new HashMap<>(), new BankClientRowMapper());
+        return result;
+    }
+
+    public List<TotalDeposits> totalDeposits() {
+        String sql15 = "SELECT last_name, first_name, account_number, sum(amount) AS total_deposits FROM client, account, transactions WHERE client.id=account.client_id AND account.account_number=transactions.to_account AND transaction_type = 'deposit' GROUP BY client.last_name, client.first_name, account.account_number ORDER BY 4 DESC";
+        List<TotalDeposits> result = jdbcTemplate.query(sql15, new HashMap<>(), new BankRepository.TotalDepositsRowMapper());
+        return result;
+    }
+
+    public List<Transfers> transfersHistory() {
+        String sql15 = "SELECT * FROM transactions ";
+        List<Transfers> result = jdbcTemplate.query(sql15, new HashMap<>(), new TransfersRowMapper());
+        return result;
+    }
+
+    private class BankClientRowMapper implements RowMapper<BankClient> {
+        @Override
+        public BankClient mapRow(ResultSet resultSet, int i) throws SQLException {
+            BankClient clients = new BankClient();
+            clients.setClientId(resultSet.getInt("id"));
+            clients.setFirstName(resultSet.getString("first_name"));
+            clients.setLastName(resultSet.getString("last_name"));
+            clients.setSocialNumber(resultSet.getString("social_number"));
+            clients.setAddress(resultSet.getString("address"));
+            clients.setEmail(resultSet.getString("email"));
+            return clients;
+        }
+    }
+
+
+    private class TotalDepositsRowMapper implements RowMapper<TotalDeposits> {
+        @Override
+        public TotalDeposits mapRow(ResultSet resultSet, int i) throws SQLException {
+            TotalDeposits deposits = new TotalDeposits();
+            deposits.setLastName(resultSet.getString("last_name"));
+            deposits.setFirstName(resultSet.getString("first_name"));
+            deposits.setAccNumber(resultSet.getString("account_number"));
+            deposits.setTotalDeposits(resultSet.getBigDecimal("total_deposits"));
+            return deposits;
+        }
+    }
+
+    private class TransfersRowMapper implements RowMapper<Transfers> {
+        @Override
+        public Transfers mapRow(ResultSet resultSet, int i) throws SQLException {
+            Transfers transfers = new Transfers();
+            transfers.setTransactionId(resultSet.getInt("transaction_id"));
+            transfers.setFromAccount(resultSet.getString("from_account"));
+            transfers.setToAccount(resultSet.getString("to_account"));
+            transfers.setAmount(resultSet.getBigDecimal("amount"));
+            transfers.setTime(resultSet.getObject("time", LocalDateTime.class));
+            transfers.setTransactionType(resultSet.getString("transaction_type"));
+            return transfers;
+        }
+    }
+
+
 }
+
 

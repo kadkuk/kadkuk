@@ -3,8 +3,10 @@ package ee.bcs.valiit.tasks.service;
 import ee.bcs.valiit.tasks.*;
 import ee.bcs.valiit.tasks.repository.BankRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -18,12 +20,19 @@ public class BankService {
     @Autowired
     private BankRepository bankRepository;
 
+    @Transactional
     public String createClient(BankClient client) {
-        bankRepository.createClient(client.getFirstName(), client.getLastName(), client.getAddress(), client.getPhone(), client.getEmail());
-        return "New client creation successful.";
+        try {
+            bankRepository.createClient(client.getFirstName(), client.getLastName(), client.getSocialNumber(), client.getAddress(), client.getEmail());
+            return "New client creation successful.";
+        } catch (DuplicateKeyException e) {
+            throw new BankExceptions("Client with this social number already exists.");
+        }
     }
 
-    public String createAccount(BankAccount bankAccount){
+
+    @Transactional
+    public String createAccount(BankAccount bankAccount) {
         try {
             int clientId = bankRepository.requestClientId(bankAccount.getClientId());
             bankRepository.createAccount(clientId, bankAccount.getAccNumber());
@@ -33,6 +42,7 @@ public class BankService {
         }
     }
 
+    @Transactional
     public String getBalance(BankAccount bankAccount) {
         try {
             BigDecimal balance = bankRepository.getBalance(bankAccount.getAccNumber());
@@ -43,6 +53,7 @@ public class BankService {
         }
     }
 
+    @Transactional
     public String deposit(BankAccount bankAccount) {
         try {
             BigDecimal balance = bankRepository.getBalance(bankAccount.getAccNumber());
@@ -60,6 +71,7 @@ public class BankService {
         }
     }
 
+    @Transactional
     public String withdraw(BankAccount bankAccount) {
         try {
             BigDecimal balance = bankRepository.getBalance(bankAccount.getAccNumber());
@@ -77,6 +89,7 @@ public class BankService {
         }
     }
 
+    @Transactional
     public String transfer(Transfers transfers) {
         try {
             BigDecimal fromBalance = bankRepository.getBalance(transfers.getFromAccount());

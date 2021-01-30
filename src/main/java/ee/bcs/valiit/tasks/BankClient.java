@@ -3,6 +3,7 @@ package ee.bcs.valiit.tasks;
 public class BankClient {
     private String firstName;
     private String lastName;
+    private String socialNumber;
     private String address;
     private String email;
     private int clientId;
@@ -21,6 +22,14 @@ public class BankClient {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getSocialNumber() {
+        return socialNumber;
+    }
+
+    public void setSocialNumber(String socialNumber) {
+        this.socialNumber = socialNumber;
     }
 
     public String getAddress() {

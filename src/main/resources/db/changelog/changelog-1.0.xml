@@ -11,6 +11,9 @@
             </column>
             <column name="first_name" type="text"/>
             <column name="last_name" type="text"/>
+            <column name="social_number" type="text">
+                <constraints nullable="false" unique="true" uniqueConstraintName="ak_social_number"/>
+            </column>
             <column name="address" type="text"/>
             <column name="email" type="text"/>
         </createTable>
@@ -19,9 +22,9 @@
             <column name="account_number" type="text">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="balance" type="numeric" />
+            <column name="balance" type="numeric"/>
             <column name="client_id" type="int">
-                <constraints foreignKeyName="fk_client_id" references="client(id)"/>
+                <constraints foreignKeyName="fk_account_client" references="client(id)"/>
             </column>
         </createTable>
 
@@ -29,16 +32,15 @@
             <column name="transaction_id" type="int" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="from_account" type="text" >
-                <constraints foreignKeyName="fk_from_account" references="account(account_number)"/>
+            <column name="from_account" type="text">
+                <constraints foreignKeyName="fk_transactions_from_account" references="account(account_number)"/>
             </column>
             <column name="to_account" type="text">
-                <constraints foreignKeyName="fk_to_account" references="account(account_number)"/>
+                <constraints foreignKeyName="fk_transactions_to_account" references="account(account_number)"/>
             </column>
-            <column name="amount" type="numeric" />
+            <column name="amount" type="numeric"/>
             <column name="time" type="timestamp"/>
             <column name="transaction_type" type="text"/>
         </createTable>
-
     </changeSet>
 </databaseChangeLog>
