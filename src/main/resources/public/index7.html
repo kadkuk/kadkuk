@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>myBank: history</title>
+</head>
+<body>
+<div class="content" style="text-align: center">
+    <table style="left: auto">
+        <tr>
+            <td>
+                <h3>
+                    <button type="button"><a href="index1.html">New client</a></button>
+                </h3>
+            </td>
+            <td>
+                <h3>
+                    <button type="button"><a href="index2.html">New account</a></button>
+                </h3>
+            </td>
+            <td>
+                <h3>
+                    <button type="button"><a href="index3.html">Deposit</a></button>
+                </h3>
+            </td>
+            <td>
+                <h3>
+                    <button type="button"><a href="index4.html">Withdraw</a></button>
+                </h3>
+            </td>
+            <td>
+                <h3>
+                    <button type="button"><a href="index5.html">Transfer</a></button>
+                </h3>
+            </td>
+            <td>
+                <h3>
+                    <button type="button"><a href="index6.html">Balance</a></button>
+                </h3>
+            </td>
+        </tr>
+    </table>
+    <table style="margin-left:auto;margin-right:auto;" border="0">
+        <tr>
+            <th></th>
+            <th><h3></h3></th>
+        </tr>
+        <form method="post">
+            <tr>
+                <th> Account number:</th>
+                <td><input id="accNumber" type="text"/></td>
+                <th>
+                    <h3>
+                        <button id="history" type="button" style="background-color: lightgrey">Get transactions
+                            history
+                        </button>
+                    </h3>
+                </th>
+            </tr>
+        </form>
+    </table>
+    <table style="margin-left:auto;margin-right:auto;" border="1" width="50%" id="accountHistory">
+        <tr style="background-color: orange">
+            <th>transaction_id</th>
+            <th>from_account</th>
+            <th>to_account</th>
+            <th>amount (EUR)</th>
+            <th>timestamp</th>
+            <th>transaction_type</th>
+        </tr>
+    </table>
+</div>
+<script>
+    function getHistory() {
+        let accNumber = document.getElementById("accNumber")
+        fetch('/bank/data/history?accNumber='+accNumber.value)
+            .then(result => result.json())
+            .then(function (result) {
+                let tableElement = document.getElementById("accountHistory");
+                tableElement.innerHTML = "";
+                for (let element of result) {
+                    let newRowElement = document.createElement("tr");
+                    tableElement.appendChild(newRowElement);
+
+                    let newCellElement = document.createElement("td");
+                    newCellElement.innerText = element.transactionId;
+                    newRowElement.appendChild(newCellElement)
+
+                    newCellElement = document.createElement("td");
+                    newCellElement.innerText = element.fromAccount;
+                    newRowElement.appendChild(newCellElement)
+
+                    newCellElement = document.createElement("td");
+                    newCellElement.innerText = element.toAccount;
+                    newRowElement.appendChild(newCellElement)
+
+                    newCellElement = document.createElement("td");
+                    newCellElement.innerText = element.amount;
+                    newRowElement.appendChild(newCellElement)
+
+                    newCellElement = document.createElement("td");
+                    newCellElement.innerText = element.time;
+                    newRowElement.appendChild(newCellElement)
+
+                    newCellElement = document.createElement("td");
+                    newCellElement.innerText = element.transactionType;
+                    newRowElement.appendChild(newCellElement)
+                }
+                console.log(result);
+            })
+    }
+
+    let resultButton7 = document.getElementById("history");
+    resultButton7.onclick = getHistory;
+
+</script>
+</body>
+</html>

@@ -22,6 +22,7 @@ public class BankControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> handleExceptions(Exception e) {
+        e.printStackTrace();
         ErrorMessage error = new ErrorMessage();
         error.setErrorMessage("Internal server error. Try again later.");
         return new ResponseEntity<>(error, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);

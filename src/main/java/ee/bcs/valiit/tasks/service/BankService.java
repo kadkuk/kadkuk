@@ -5,6 +5,7 @@ import ee.bcs.valiit.tasks.repository.BankRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,12 +19,15 @@ import java.util.List;
 public class BankService {
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private BankRepository bankRepository;
 
     @Transactional
     public String createClient(BankClient client) {
         try {
-            bankRepository.createClient(client.getFirstName(), client.getLastName(), client.getSocialNumber(), client.getAddress(), client.getEmail());
+            bankRepository.createClient(client.getFirstName(), client.getLastName(), client.getSocialNumber(), client.getAddress(), client.getEmail(), passwordEncoder.encode(client.getPassword()));
             return "New client creation successful.";
         } catch (DuplicateKeyException e) {
             throw new BankExceptions("Client with this social number already exists.");
@@ -64,7 +68,7 @@ public class BankService {
                 BigDecimal newBalance = balance.add(transactionAmount).setScale(2, RoundingMode.HALF_UP);
                 bankRepository.changeBalance(newBalance, bankAccount.getAccNumber());
                 bankRepository.addToTransactionsDeposit(transactionAmount, bankAccount.getAccNumber());
-                return "Your new balance is " + String.valueOf((newBalance)) + " EUR.";
+                return "Your new balance is " + String.valueOf(newBalance) + " EUR.";
             }
         } catch (EmptyResultDataAccessException e) {
             throw new BankExceptions("Account not found.");
@@ -80,6 +84,9 @@ public class BankService {
             } else {
                 BigDecimal transactionAmount = bankAccount.getTransactionAmount().setScale(2, RoundingMode.HALF_UP);
                 BigDecimal newBalance = balance.subtract(transactionAmount).setScale(2, RoundingMode.HALF_UP);
+                if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
+                    throw new BankExceptions("Not enough funds.");
+                }
                 bankRepository.changeBalance(newBalance, bankAccount.getAccNumber());
                 bankRepository.addToTransactionsWithdraw(transactionAmount, bankAccount.getAccNumber());
                 return "Your new balance is " + String.valueOf((newBalance)) + " EUR.";
@@ -122,8 +129,8 @@ public class BankService {
         return bankRepository.totalDeposits();
     }
 
-    public List<Transfers> transfersHistory() {
-        return bankRepository.transfersHistory();
+    public List<TransactionsHistory> transactionsHistory(String accNumber) {
+        return bankRepository.transactionsHistory(accNumber);
     }
 }
 

@@ -43,4 +43,15 @@
             <column name="transaction_type" type="text"/>
         </createTable>
     </changeSet>
+
+    <changeSet id="2" author="Kadri">
+        <addColumn tableName="client">
+            <column name="password" type="text" >
+                <constraints unique="true" uniqueConstraintName="ak_password"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+
+
 </databaseChangeLog>

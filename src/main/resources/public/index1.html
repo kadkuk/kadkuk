@@ -9,11 +9,6 @@
     <tr>
         <td>
             <h3>
-                <button type="button"><a href="index0.html">Home</a></button>
-            </h3>
-        </td>
-        <td>
-            <h3>
                 <button type="button"><a href="index2.html">New account</a></button>
             </h3>
         </td>
@@ -34,7 +29,12 @@
         </td>
         <td>
             <h3>
-                <button type="button"><a href="index6.html">Account balance</a></button>
+                <button type="button"><a href="index6.html">Balance</a></button>
+            </h3>
+        </td>
+        <td>
+            <h3>
+                <button type="button"><a href="index7.html">Transactions history</a></button>
             </h3>
         </td>
     </tr>
@@ -42,7 +42,7 @@
 <div style="text-align: center">
     <table style="margin-left:auto;margin-right:auto;" border="0" width="50%">
         <tr>
-            <td><img src="mybank10.png" width="50%"/></td>
+            <td><img src="mybank10.png" width="60%"/></td>
         </tr>
     </table>
 </div>
@@ -51,7 +51,7 @@
     <table style="margin-left:auto;margin-right:auto;" border="0">
         <tr>
             <th></th>
-            <th><h3> Create your client profile: </h3></th>
+            <th><h3></h3></th>
         </tr>
         <form method="post">
             <tr>
@@ -63,7 +63,7 @@
                 <td><input id="lastName" type="text"/></td>
             </tr>
             <tr>
-            <th> Social number:</th>
+                <th> Social number:</th>
                 <td><input id="socialNumber" type="number"/></td>
             </tr>
             <tr>
@@ -75,16 +75,58 @@
                 <td><input id="email" type="email"/></td>
             </tr>
             <tr>
+                <th> Create password:</th>
+                <td><input id="password" type="password"/></td>
+            </tr>
+            <tr>
                 <th></th>
                 <td>
                     <h3>
-                        <button id="submit" type="button">Submit</button>
+                        <button id="submit" type="button">Create your client profile</button>
                     </h3>
                 </td>
             </tr>
         </form>
     </table>
 </div>
+<script>
+
+    let postUrl = '/bank/client';
+
+    function saveClient() {
+        let newClient = {
+            firstName: document.getElementById("firstName").value,
+            lastName: document.getElementById("lastName").value,
+            socialNumber: document.getElementById("socialNumber").value,
+            address: document.getElementById("address").value,
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value,
+        }
+        if (newClient.socialNumber.length === 0) {
+            alert("Social number must be filled!")
+        } else if (newClient.password.length <= 7) {
+            alert("Password too weak. Please choose longer password.")
+        } else {
+            fetch(postUrl,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json'
+                    },
+                    body: JSON.stringify(newClient)
+                }
+            )
+                .then(result => result.text())
+                .then(function () {
+                    alert("New client created!")
+                })
+        }
+    }
+
+    let resultButton = document.getElementById("submit");
+    resultButton.onclick = saveClient;
+
+</script>
 </body>
 </html>
 

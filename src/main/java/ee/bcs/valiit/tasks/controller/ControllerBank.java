@@ -32,14 +32,14 @@ public class ControllerBank {
         return bankService.createClient(client);
     }
 
-    //http://localhost:8080/bank/createaccount/
+    //http://localhost:8080/bank/createaccount
     @PutMapping("createaccount")
     public String createAccount(@RequestBody BankAccount bankAccount) {
         return bankService.createAccount(bankAccount);
     }
 
     //http://localhost:8080/bank/getbalance
-    @PutMapping ("getbalance")
+    @PutMapping("getbalance")
     public String getbalance(@RequestBody BankAccount bankAccount) {
         return bankService.getBalance(bankAccount);
     }
@@ -52,7 +52,7 @@ public class ControllerBank {
 
     //http://localhost:8080/bank/withdraw
     @PutMapping("withdraw")
-    public String withdraw (@RequestBody BankAccount bankAccount) {
+    public String withdraw(@RequestBody BankAccount bankAccount) {
         return bankService.withdraw(bankAccount);
     }
 
@@ -63,28 +63,24 @@ public class ControllerBank {
     }
 
 
-
-
     //http://localhost:8080/bank
-  //  @GetMapping()
-   // public List<BankClient> clients(){
-     //   String sql15="SELECT * FROM client";
-       // List<BankClient> result = jdbcTemplate.query(sql15, new HashMap<>(), new BankClientRowMapper());
-        //return result;
-   // }
+    @GetMapping("data/clients")
+    public List<BankClient> clients(){
+        return bankService.allClients();
+    }
 
-    //private class BankClientRowMapper implements RowMapper<BankClient> {
-      //  @Override
-        //public BankClient mapRow(ResultSet resultSet, int i) throws SQLException {
-          //  BankClient clients = new BankClient();
-            //clients.setClientId(resultSet.getInt("id"));
-            //clients.setFirstName(resultSet.getString("first_name"));
-            //clients.setLastName(resultSet.getString("last_name"));
-            //clients.setAddress(resultSet.getString("address"));
-            //clients.setEmail(resultSet.getString("email"));
-            //return clients;
-        //}
-    //}
+    //http://localhost:8080/bank/depositors
+    @GetMapping("data/depositors")
+    public List<TotalDeposits> depositors(){
+        return bankService.totalDeposits();
+    }
+
+    //http://localhost:8080/bank/history
+    @GetMapping("data/history")
+    public List<TransactionsHistory> transfersHistory(@RequestParam("accNumber") String accNumber){
+        return bankService.transactionsHistory(accNumber);
+    }
+
 }
 
 

@@ -7,6 +7,15 @@ public class BankClient {
     private String address;
     private String email;
     private int clientId;
+    private String password;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getFirstName() {
         return firstName;

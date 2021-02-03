@@ -9,11 +9,6 @@
     <tr>
         <td>
             <h3>
-                <button type="button"><a href="index0.html">Home</a></button>
-            </h3>
-        </td>
-        <td>
-            <h3>
                 <button type="button"><a href="index1.html">New client</a></button>
             </h3>
         </td>
@@ -34,7 +29,12 @@
         </td>
         <td>
             <h3>
-                <button type="button"><a href="index6.html">Account balance</a></button>
+                <button type="button"><a href="index6.html">Balance</a></button>
+            </h3>
+        </td>
+        <td>
+            <h3>
+                <button type="button"><a href="index7.html">Transactions history</a></button>
             </h3>
         </td>
     </tr>
@@ -49,7 +49,7 @@
     <table style="margin-left:auto;margin-right:auto;" border="0">
         <tr>
             <th></th>
-            <th><h3> Transfer money: </h3></th>
+            <th><h3></h3></th>
         </tr>
         <form method="post">
             <tr>
@@ -68,12 +68,39 @@
                 <th></th>
                 <td>
                     <h3>
-                        <button id="submit" type="button">Submit</button>
+                        <button id="submit" type="button">Transfer money</button>
                     </h3>
                 </td>
             </tr>
         </form>
     </table>
 </div>
+<script>
+
+    function transfer() {
+        let newTransfer = {
+            fromAccount: document.getElementById("fromAccount").value,
+            toAccount: document.getElementById("toAccount").value,
+            amount: document.getElementById("amount").value
+        }
+        fetch('/bank/transfer',
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(newTransfer)
+            }
+        )
+            .then(result => result.text())
+            .then(function (result) {
+                alert(result)
+            })
+    }
+
+    let resultButton5 = document.getElementById("submit");
+    resultButton5.onclick = transfer;
+
+</script>
 </body>
 </html>

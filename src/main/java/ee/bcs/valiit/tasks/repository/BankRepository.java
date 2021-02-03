@@ -1,8 +1,6 @@
 package ee.bcs.valiit.tasks.repository;
 
-import ee.bcs.valiit.tasks.BankClient;
-import ee.bcs.valiit.tasks.TotalDeposits;
-import ee.bcs.valiit.tasks.Transfers;
+import ee.bcs.valiit.tasks.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -21,14 +19,15 @@ public class BankRepository {
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
 
-    public void createClient(String firstName, String lastName, String socialNumber, String address, String email) {
-        String sql = "INSERT INTO client (first_name, last_name, social_number, address, email) VALUES(:fnParam, :lnParam, :snParam, :addParam, :emailParam)";
+    public void createClient(String firstName, String lastName, String socialNumber, String address, String email, String password) {
+        String sql = "INSERT INTO client (first_name, last_name, social_number, address, email, password) VALUES(:fnParam, :lnParam, :snParam, :addParam, :emailParam, :passwordParam)";
         HashMap<String, Object> paraMap = new HashMap<>();
         paraMap.put("fnParam", firstName);
         paraMap.put("lnParam", lastName);
         paraMap.put("snParam", socialNumber);
         paraMap.put("addParam", address);
         paraMap.put("emailParam", email);
+        paraMap.put("passwordParam", password);
         jdbcTemplate.update(sql, paraMap);
     }
 
@@ -115,10 +114,19 @@ public class BankRepository {
         return result;
     }
 
-    public List<Transfers> transfersHistory() {
-        String sql15 = "SELECT * FROM transactions ";
-        List<Transfers> result = jdbcTemplate.query(sql15, new HashMap<>(), new TransfersRowMapper());
+    public List<TransactionsHistory> transactionsHistory (String accNumber) {
+        String sql15 = "SELECT * FROM transactions WHERE from_account= :accParam OR to_account= :accParam";
+        HashMap<String, Object> paraMap15 = new HashMap<>();
+        paraMap15.put("accParam", accNumber);
+        List<TransactionsHistory> result = jdbcTemplate.query(sql15, paraMap15, new TransactionsHistoryRowMapper());
         return result;
+    }
+
+    public String requestClientPassword(String email) {
+        String sql20 = "SELECT password FROM client WHERE email = :emailParam";
+        HashMap<String, Object> paraMap20 = new HashMap<>();
+        paraMap20.put("emailParam", email);
+        return jdbcTemplate.queryForObject(sql20, paraMap20, String.class);
     }
 
     private class BankClientRowMapper implements RowMapper<BankClient> {
@@ -148,17 +156,17 @@ public class BankRepository {
         }
     }
 
-    private class TransfersRowMapper implements RowMapper<Transfers> {
+    private class TransactionsHistoryRowMapper implements RowMapper<TransactionsHistory> {
         @Override
-        public Transfers mapRow(ResultSet resultSet, int i) throws SQLException {
-            Transfers transfers = new Transfers();
-            transfers.setTransactionId(resultSet.getInt("transaction_id"));
-            transfers.setFromAccount(resultSet.getString("from_account"));
-            transfers.setToAccount(resultSet.getString("to_account"));
-            transfers.setAmount(resultSet.getBigDecimal("amount"));
-            transfers.setTime(resultSet.getObject("time", LocalDateTime.class));
-            transfers.setTransactionType(resultSet.getString("transaction_type"));
-            return transfers;
+        public TransactionsHistory mapRow(ResultSet resultSet, int i) throws SQLException {
+            TransactionsHistory transactionsHistory = new TransactionsHistory();
+            transactionsHistory.setTransactionId(resultSet.getInt("transaction_id"));
+            transactionsHistory.setFromAccount(resultSet.getString("from_account"));
+            transactionsHistory.setToAccount(resultSet.getString("to_account"));
+            transactionsHistory.setAmount(resultSet.getBigDecimal("amount"));
+            transactionsHistory.setTime(resultSet.getObject("time", LocalDateTime.class));
+            transactionsHistory.setTransactionType(resultSet.getString("transaction_type"));
+            return transactionsHistory;
         }
     }
 

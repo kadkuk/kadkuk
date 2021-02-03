@@ -9,11 +9,6 @@
     <tr>
         <td>
             <h3>
-                <button type="button"><a href="index0.html">Home</a></button>
-            </h3>
-        </td>
-        <td>
-            <h3>
                 <button type="button"><a href="index1.html">New client</a></button>
             </h3>
         </td>
@@ -37,6 +32,11 @@
                 <button type="button"><a href="index5.html">Transfer</a></button>
             </h3>
         </td>
+        <td>
+            <h3>
+                <button type="button"><a href="index7.html">Transactions history</a></button>
+            </h3>
+        </td>
     </tr>
 </table>
 <div style="text-align: center">
@@ -49,7 +49,7 @@
     <table style="margin-left:auto;margin-right:auto;" border="0">
         <tr>
             <th></th>
-            <th><h3> Check your account balance: </h3></th>
+            <th><h3></h3></th>
         </tr>
         <form method="post">
             <tr>
@@ -60,12 +60,37 @@
                 <th></th>
                 <td>
                     <h3>
-                        <button id="submit" type="button">Submit</button>
+                        <button id="accBalance" type="button">Check account balance</button>
                     </h3>
                 </td>
             </tr>
         </form>
     </table>
 </div>
+<script>
+
+    function balance() {
+        let newBalance = {
+            accNumber: document.getElementById("accNumber").value
+        }
+        fetch('/bank/getbalance',
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(newBalance)
+            }
+        )
+            .then(result => result.text())
+            .then(function (result) {
+                alert(result)
+            })
+    }
+
+    let resultButton6 = document.getElementById("accBalance");
+    resultButton6.onclick = balance;
+
+</script>
 </body>
 </html>

@@ -6,70 +6,96 @@
 </head>
 <body>
 <table style="left: auto">
-  <tr>
-    <td>
-      <h3>
-        <button type="button"><a href="index0.html">Home</a></button>
-      </h3>
-    </td>
-    <td>
-      <h3>
-        <button type="button"><a href="index1.html">New client</a></button>
-      </h3>
-    </td>
-    <td>
-      <h3>
-        <button type="button"><a href="index2.html">New account</a></button>
-      </h3>
-    </td>
-    <td>
-      <h3>
-        <button type="button"><a href="index4.html">Withdraw</a></button>
-      </h3>
-    </td>
-    <td>
-      <h3>
-        <button type="button"><a href="index5.html">Transfer</a></button>
-      </h3>
-    </td>
-    <td>
-      <h3>
-        <button type="button"><a href="index6.html">Account balance</a></button>
-      </h3>
-    </td>
-  </tr>
+    <tr>
+        <td>
+            <h3>
+                <button type="button"><a href="index1.html">New client</a></button>
+            </h3>
+        </td>
+        <td>
+            <h3>
+                <button type="button"><a href="index2.html">New account</a></button>
+            </h3>
+        </td>
+        <td>
+            <h3>
+                <button type="button"><a href="index4.html">Withdraw</a></button>
+            </h3>
+        </td>
+        <td>
+            <h3>
+                <button type="button"><a href="index5.html">Transfer</a></button>
+            </h3>
+        </td>
+        <td>
+            <h3>
+                <button type="button"><a href="index6.html">Balance</a></button>
+            </h3>
+        </td>
+        <td>
+            <h3>
+                <button type="button"><a href="index7.html">Transactions history</a></button>
+            </h3>
+        </td>
+    </tr>
 </table>
 <div style="text-align: center">
-  <table style="margin-left:auto;margin-right:auto;" border="0" width="50%">
-    <tr>
-      <td><img src="mybank10.png" width="50%"/></td>
-    </tr>
-  </table>
-  <br>
-  <table style="margin-left:auto;margin-right:auto;" border="0">
-    <tr>
-      <th></th>
-      <th><h3> Deposit money: </h3></th>
-    </tr>
-    <form method="post">
-      <tr>
-        <th> Account number:</th>
-        <td><input id="accNumber" type="text"/></td>
-      </tr>
-      <tr>
-        <th> Amount:</th>
-        <td><input id="transactionAmount" type="number"/></td>
-      </tr>
-      <tr>
-        <th></th>
-        <td>
-          <h3>
-            <button id="submit" type="button">Submit</button>
-          </h3>
-        </td>
-      </tr>
-    </form>
-  </table>
+    <table style="margin-left:auto;margin-right:auto;" border="0" width="50%">
+        <tr>
+            <td><img src="mybank10.png" width="50%"/></td>
+        </tr>
+    </table>
+    <br>
+    <table style="margin-left:auto;margin-right:auto;" border="0">
+        <tr>
+            <th></th>
+            <th><h3></h3></th>
+        </tr>
+        <form method="post">
+            <tr>
+                <th> Account number:</th>
+                <td><input id="accNumber" type="text"/></td>
+            </tr>
+            <tr>
+                <th> Amount:</th>
+                <td><input id="transactionAmount" type="number"/></td>
+            </tr>
+            <tr>
+                <th></th>
+                <td>
+                    <h3>
+                        <button id="submit" type="button">Deposit money</button>
+                    </h3>
+                </td>
+            </tr>
+        </form>
+    </table>
 </div>
+<script>
+
+    function deposit() {
+        let newDeposit = {
+            accNumber: document.getElementById("accNumber").value,
+            transactionAmount: document.getElementById("transactionAmount").value
+        }
+        fetch('/bank/deposit',
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(newDeposit)
+            }
+        )
+            .then(result => result.text())
+            .then(function (result) {
+                alert(result)
+            })
+    }
+
+    let resultButton3 = document.getElementById("submit");
+    resultButton3.onclick = deposit;
+
+</script>
 </body>
 </html>
