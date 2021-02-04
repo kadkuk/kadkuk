@@ -2,7 +2,10 @@ package ee.bcs.valiit.tasks.service;
 
 import ee.bcs.valiit.tasks.*;
 import ee.bcs.valiit.tasks.repository.BankRepository;
+import liquibase.exception.DatabaseException;
+import liquibase.exception.DatabaseIncapableOfOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,6 +36,10 @@ public class BankService {
             return "New client creation successful.";
         } catch (DuplicateKeyException e) {
             throw new BankExceptions("Client with this social number already exists.");
+        } catch (DataIntegrityViolationException e) {
+            throw new BankExceptions("Social number cannot be empty");
+        } catch (IllegalArgumentException e) {
+            throw new BankExceptions("Password cannot be empty");
         }
     }
 
@@ -47,10 +56,10 @@ public class BankService {
     }
 
     @Transactional
-    public String getBalance(BankAccount bankAccount) {
+    public String getBalance(String accNumber) {
         try {
-            BigDecimal balance = bankRepository.getBalance(bankAccount.getAccNumber());
-            bankRepository.addToTransactionsBalance(bankAccount.getAccNumber());
+            BigDecimal balance = bankRepository.getBalance(accNumber);
+            bankRepository.addToTransactionsBalance(accNumber);
             return "Balance is " + String.valueOf(balance) + " EUR.";
         } catch (EmptyResultDataAccessException e) {
             throw new BankExceptions("Account not found.");
@@ -130,8 +139,11 @@ public class BankService {
     }
 
     public List<TransactionsHistory> transactionsHistory(String accNumber) {
-        return bankRepository.transactionsHistory(accNumber);
+        List <TransactionsHistory> newList = bankRepository.transactionsHistory(accNumber);
+        if (newList.isEmpty()) {
+            throw new BankExceptions("Account not found.");
+        } else {
+            return bankRepository.transactionsHistory(accNumber);
+        }
     }
 }
-
-
